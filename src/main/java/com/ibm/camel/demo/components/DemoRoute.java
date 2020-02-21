@@ -17,7 +17,7 @@ public class DemoRoute extends RouteBuilder {
     @Override
     public void configure() throws Exception {
 
-        restConfiguration().component("netty-http").host("localhost").port(8080).bindingMode(RestBindingMode.json);
+        restConfiguration().component("netty-http").host("0.0.0.0").port(8080).bindingMode(RestBindingMode.json);
 //        .setJsonDataFormat("json-jackson");
 
         from("rest://get:echoGet/{echoValue}").process(new Processor() {
