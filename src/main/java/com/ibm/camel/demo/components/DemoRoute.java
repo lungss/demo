@@ -21,12 +21,11 @@ public class DemoRoute extends RouteBuilder {
 //        .setJsonDataFormat("json-jackson");
 
         // GET /echoget/(echoValue}
-        from("rest://get:echoGet/{echoValue}").process(new Processor() {
+        from("rest://get:echoget/{echoValue}").process(new Processor() {
             @Override
             public void process(Exchange exchange) throws Exception {
                 System.out.println(exchange.getIn().getHeader("echoValue"));
-                Thread.sleep(5000);
-                exchange.getMessage().setBody(exchange.getIn().getHeader("echoValue"));
+                // exchange.getMessage().setBody(exchange.getIn().getHeader("echoValue"));
             }
         });
 
@@ -39,7 +38,7 @@ public class DemoRoute extends RouteBuilder {
                 Map bodyMap = (Map) exchange.getIn().getBody();
                 exchange.getMessage().setHeader("postEcho", bodyMap.get("echo"));
             }
-        }).to("rest://get:echoGet/{postEcho}");
+        }).to("rest://get:echoget/{postEcho}");
         /*
 		from("file:C:/inboxPOST?noop=true").process(new CreateEmployeeProcessor()).marshal(jsonDataFormat)
 		.setHeader(Exchange.HTTP_METHOD, simple("POST"))
