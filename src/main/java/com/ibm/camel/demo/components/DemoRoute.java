@@ -20,14 +20,18 @@ public class DemoRoute extends RouteBuilder {
         restConfiguration().component("netty-http").host("0.0.0.0").port(8080).bindingMode(RestBindingMode.json);
 //        .setJsonDataFormat("json-jackson");
 
+        // GET /echoget/(echoValue}
         from("rest://get:echoGet/{echoValue}").process(new Processor() {
             @Override
             public void process(Exchange exchange) throws Exception {
                 System.out.println(exchange.getIn().getHeader("echoValue"));
+                Thread.sleep(5000);
                 exchange.getMessage().setBody(exchange.getIn().getHeader("echoValue"));
             }
         });
 
+        // POST /echo
+        // {"echo":"anything"}
         from("rest://post:echo").unmarshal().json(JsonLibrary.Jackson).process(new Processor() {
             @Override
             public void process(Exchange exchange) throws Exception {
@@ -36,6 +40,11 @@ public class DemoRoute extends RouteBuilder {
                 exchange.getMessage().setHeader("postEcho", bodyMap.get("echo"));
             }
         }).to("rest://get:echoGet/{postEcho}");
-
+        /*
+		from("file:C:/inboxPOST?noop=true").process(new CreateEmployeeProcessor()).marshal(jsonDataFormat)
+		.setHeader(Exchange.HTTP_METHOD, simple("POST"))
+		.setHeader(Exchange.CONTENT_TYPE, constant("application/json")).to("http://localhost:8080/employee")
+		.process(new MyProcessor());
+        */
     }
 }
